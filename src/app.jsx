@@ -23,48 +23,6 @@ const SEED_COLLECTIONS = [
   { id: "c3", customer: "Arjun Patel", amount: 620000, date: "2026-03-30", mode: "UPI", ref: "UPI-9921", saleId: "s3" },
   { id: "c4", customer: "Lakshmi Devi", amount: 1450000, date: "2026-04-01", mode: "NEFT", ref: "NEFT-5510", saleId: "s4" },
 ];
-const SEED_INVENTORY = [
-  { id: "i1", item: "Cement (OPC 53)", unit: "Bags", qty: 1240, threshold: 300, cost: 380, category: "Raw Material" },
-  { id: "i2", item: "Steel Rods (12mm)", unit: "MT", qty: 18, threshold: 5, cost: 58000, category: "Raw Material" },
-  { id: "i3", item: "River Sand", unit: "CFT", qty: 4500, threshold: 1000, cost: 45, category: "Raw Material" },
-  { id: "i4", item: "Red Bricks", unit: "Nos", qty: 32000, threshold: 5000, cost: 8, category: "Raw Material" },
-  { id: "i5", item: "PVC Pipes (4\")", unit: "Mtrs", qty: 320, threshold: 100, cost: 110, category: "Plumbing" },
-  { id: "i6", item: "Vitrified Tiles", unit: "Sqft", qty: 2800, threshold: 500, cost: 75, category: "Finishing" },
-  { id: "i7", item: "Diesel", unit: "Ltrs", qty: 450, threshold: 100, cost: 92, category: "Fuel" },
-];
-
-const SEED_EMPLOYEES = [
-  { id: "e1", name: "Suresh Kumar", role: "Site Engineer", phone: "9876500001", type: "Staff" },
-  { id: "e2", name: "Ramu", role: "Mason", phone: "9876500002", type: "Labour" },
-  { id: "e3", name: "Selvam", role: "Electrician", phone: "9876500003", type: "Labour" },
-  { id: "e4", name: "Prakash", role: "Plumber", phone: "9876500004", type: "Labour" },
-  { id: "e5", name: "Mani", role: "Helper", phone: "9876500005", type: "Labour" },
-];
-import { useState, useEffect } from "react";
-
-// ─── Helpers ────────────────────────────────────────────────────────────────
-const today = () => new Date().toISOString().slice(0, 10);
-const fmt = (n) => "₹" + Number(n).toLocaleString("en-IN");
-const fmtL = (n) =>
-  n >= 1e7 ? "₹" + (n / 1e7).toFixed(2) + " Cr"
-  : n >= 1e5 ? "₹" + (n / 1e5).toFixed(1) + " L"
-  : "₹" + Number(n).toLocaleString("en-IN");
-const uid = () => Date.now() + Math.random().toString(36).slice(2, 6);
-
-// ─── Seed Data ───────────────────────────────────────────────────────────────
-const SEED_SALES = [
-  { id: "s1", customer: "Rajesh Kumar", project: "Villa Block A – Unit 3", amount: 4500000, paid: 1800000, date: "2026-01-10", status: "Active", phone: "9876543210" },
-  { id: "s2", customer: "Meena Sharma", project: "Commercial Plot – Sec 7", amount: 2200000, paid: 2200000, date: "2026-02-18", status: "Completed", phone: "9123456780" },
-  { id: "s3", customer: "Arjun Patel", project: "Row House – Phase 2", amount: 3100000, paid: 620000, date: "2026-03-05", status: "Active", phone: "9988776655" },
-  { id: "s4", customer: "Lakshmi Devi", project: "Apartment – Tower B/12", amount: 5800000, paid: 2900000, date: "2026-03-20", status: "Active", phone: "9001122334" },
-];
-
-const SEED_COLLECTIONS = [
-  { id: "c1", customer: "Rajesh Kumar", amount: 900000, date: "2026-02-15", mode: "Bank Transfer", ref: "TXN-2034", saleId: "s1" },
-  { id: "c2", customer: "Meena Sharma", amount: 1100000, date: "2026-02-25", mode: "Cheque", ref: "CHQ-8812", saleId: "s2" },
-  { id: "c3", customer: "Arjun Patel", amount: 620000, date: "2026-03-30", mode: "UPI", ref: "UPI-9921", saleId: "s3" },
-  { id: "c4", customer: "Lakshmi Devi", amount: 1450000, date: "2026-04-01", mode: "NEFT", ref: "NEFT-5510", saleId: "s4" },
-];
 
 const SEED_INVENTORY = [
   { id: "i1", item: "Cement (OPC 53)", unit: "Bags", qty: 1240, threshold: 300, cost: 380, category: "Raw Material" },
@@ -220,7 +178,9 @@ export default function ShasthaInfracon() {
       showToast("Vehicle added!");
     }
     closeModal();
-    const markEmpAtt = (empId, status) => {
+  };
+
+  const markEmpAtt = (empId, status) => {
     const existing = empAtt.find(a => a.employeeId === empId && a.date === attDate);
     const emp = employees.find(e => e.id === empId);
     const wages = status === "Present" ? (emp?.type === "Staff" ? 1200 : 650) : status === "Half Day" ? (emp?.type === "Staff" ? 600 : 325) : 0;
@@ -229,7 +189,7 @@ export default function ShasthaInfracon() {
     } else {
       setEmpAtt(p => [...p, { id: uid(), employeeId: empId, date: attDate, status, inTime: "08:00", outTime: "17:00", wages }]);
     }
-    showToast(Marked ${status}, "info");
+    showToast(`Marked ${status}`, "info");
   };
 
   const markVehAtt = (vehId, status) => {
@@ -239,7 +199,7 @@ export default function ShasthaInfracon() {
     } else {
       setVehAtt(p => [...p, { id: uid(), vehicleId: vehId, date: attDate, status, startHr: "07:00", endHr: "17:00", hours: 10, fuelUsed: 0, site: "" }]);
     }
-    showToast(Vehicle ${status}, "info");
+    showToast(`Vehicle ${status}`, "info");
   };
 
   const getEmpStatus = (empId) => empAtt.find(a => a.employeeId === empId && a.date === attDate)?.status || "—";
@@ -300,7 +260,7 @@ export default function ShasthaInfracon() {
 
       {/* Toast */}
       {toast && (
-        <div style={{ position: "fixed", top: 18, right: 18, zIndex: 999, background: toast.type === "error" ? "#7f1d1d" : toast.type === "info" ? "#1e3a5f" : "#14532d", color: "white", padding: "12px 20px", borderRadius: 12, fontWeight: 700, fontSize: 13, animation: "toastIn .3s ease", boxShadow: "0 8px 32px rgba(0,0,0,.5)", border: 1px solid ${toast.type === "error" ? "#ef4444" : toast.type === "info" ? "#3b82f6" : "#22c55e"} }}>
+        <div style={{ position: "fixed", top: 18, right: 18, zIndex: 999, background: toast.type === "error" ? "#7f1d1d" : toast.type === "info" ? "#1e3a5f" : "#14532d", color: "white", padding: "12px 20px", borderRadius: 12, fontWeight: 700, fontSize: 13, animation: "toastIn .3s ease", boxShadow: "0 8px 32px rgba(0,0,0,.5)", border: `1px solid ${toast.type === "error" ? "#ef4444" : toast.type === "info" ? "#3b82f6" : "#22c55e"}` }}>
           {toast.type === "error" ? "❌" : toast.type === "info" ? "ℹ️" : "✅"} {toast.msg}
         </div>
       )}
@@ -338,15 +298,15 @@ export default function ShasthaInfracon() {
             </div>
             <div className="kpi-grid">
               {[
-                { label: "Total Sales Value", val: fmtL(totalSales), sub: ${sales.length} projects, icon: "📊", c: "#3b82f6" },
-                { label: "Amount Collected", val: fmtL(totalCollected), sub: ${Math.round(totalCollected / totalSales * 100)}% recovered, icon: "💰", c: "#22c55e" },
+                { label: "Total Sales Value", val: fmtL(totalSales), sub: `${sales.length} projects`, icon: "📊", c: "#3b82f6" },
+                { label: "Amount Collected", val: fmtL(totalCollected), sub: `${Math.round(totalCollected / totalSales * 100)}% recovered`, icon: "💰", c: "#22c55e" },
                 { label: "Pending Receivables", val: fmtL(totalPending), sub: "Outstanding balance", icon: "⏳", c: "#f59e0b" },
-                { label: "Inventory Value", val: fmtL(invValue), sub: ${lowStock.length} low stock alerts, icon: "📦", c: "#a855f7" },
-                { label: "Staff Present Today", val: ${presentToday} / ${employees.length}, sub: "Attendance today", icon: "👷", c: "#06b6d4" },
-                { label: "Active Vehicles", val: ${activeVehicles} / ${vehicles.length}, sub: "On-site today", icon: "🚧", c: "#f97316" },
+                { label: "Inventory Value", val: fmtL(invValue), sub: `${lowStock.length} low stock alerts`, icon: "📦", c: "#a855f7" },
+                { label: "Staff Present Today", val: `${presentToday} / ${employees.length}`, sub: "Attendance today", icon: "👷", c: "#06b6d4" },
+                { label: "Active Vehicles", val: `${activeVehicles} / ${vehicles.length}`, sub: "On-site today", icon: "🚧", c: "#f97316" },
               ].map((k, i) => (
-                <div key={i} className="card" style={{ animationDelay: ${i * .07}s, position: "relative", overflow: "hidden" }}>
-                  <div style={{ position: "absolute", top: -16, right: -16, width: 72, height: 72, background: radial-gradient(circle,${k.c}25,transparent 70%), borderRadius: "50%" }} />
+                <div key={i} className="card" style={{ animationDelay: `${i * .07}s`, position: "relative", overflow: "hidden" }}>
+                  <div style={{ position: "absolute", top: -16, right: -16, width: 72, height: 72, background: `radial-gradient(circle,${k.c}25,transparent 70%)`, borderRadius: "50%" }} />
                   <div style={{ fontSize: 22, marginBottom: 8 }}>{k.icon}</div>
                   <div style={{ fontFamily: "'Barlow Condensed'", fontSize: 26, fontWeight: 800, color: k.c }}>{k.val}</div>
                   <div style={{ fontSize: 12, color: "#9aabb8", marginTop: 2, fontWeight: 600 }}>{k.label}</div>
@@ -368,7 +328,7 @@ export default function ShasthaInfracon() {
                         <span className="badge" style={{ background: statusColor[s.status]?.bg, color: statusColor[s.status]?.color }}>{s.status}</span>
                       </div>
                       <div style={{ fontSize: 11, color: "#3d5070", marginBottom: 5 }}>{s.project}</div>
-                      <div className="progress"><div className="progress-fill" style={{ width: ${pct}%, background: pct === 100 ? "#22c55e" : "#f59e0b" }} /></div>
+                      <div className="progress"><div className="progress-fill" style={{ width: `${pct}%`, background: pct === 100 ? "#22c55e" : "#f59e0b" }} /></div>
                       <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 11, color: "#5a7090" }}>
                         <span>Collected: {fmt(s.paid)}</span><span>{pct}% paid</span>
                       </div>
@@ -448,7 +408,7 @@ export default function ShasthaInfracon() {
                     <div>
                       <div style={{ fontFamily: "JetBrains Mono", fontSize: 13, fontWeight: 600, color: "#22c55e" }}>{fmt(s.paid)}</div>
                       <div className="progress" style={{ marginTop: 4 }}>
-                        <div className="progress-fill" style={{ width: ${pct}%, background: pct === 100 ? "#22c55e" : "#f59e0b" }} />
+                        <div className="progress-fill" style={{ width: `${pct}%`, background: pct === 100 ? "#22c55e" : "#f59e0b" }} />
                       </div>
                     </div>
                     <span className="badge" style={{ background: statusColor[s.status]?.bg, color: statusColor[s.status]?.color }}>{s.status}</span>
@@ -497,7 +457,8 @@ export default function ShasthaInfracon() {
             </div>
           </div>
         )}
-{/* ═══ INVENTORY ══════════════════════════════════════════════════════ */}
+
+        {/* ═══ INVENTORY ══════════════════════════════════════════════════════ */}
         {tab === "inventory" && (
           <div className="anim">
             <div className="section-header">
